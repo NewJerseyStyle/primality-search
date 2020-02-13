@@ -2,7 +2,7 @@
 Successful implementation of aks primality test.
 """
 
-from gmpy2 import log, sqrt, floor
+from gmpy2 import log, sqrt, floor, is_power, gcd
 
 
 def aks_test(n):
@@ -10,7 +10,7 @@ def aks_test(n):
     Implement the AKS primality test.
     """
     # Check if n is a perfect power. If so, return composite.
-    if is_perfect_power(n):
+    if is_power(n):
         return "composite"
     
     # Find the smallest r such that the multiplicative order of n modulo r
@@ -48,46 +48,6 @@ def ord(a, n):
             k += 1
     
     return k
-
-
-def is_perfect_power(n):
-    """
-    Returns True if n is a perfect power, that is, if there exist integers
-    a and b such that n = a^b. This algorithm was proposed in
-    https://link.springer.com/article/10.1007/BF01228507
-    """
-    # If n is a perfect bth power, then b <= log(n). Therefore, compute an
-    # integer approximation x of n^(1/b) for every such b, starting with b = 2.
-    # Only prime values of b need to be used.
-    primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]
-    b = 2
-    while b <= (log(n, 2) + 1):
-        if b in primes:
-            # Establish upper limit for search of bases x to prime b
-            lim = pow(2, (log(n, 2) / b) + 1)
-
-            # Do a search between 2 and lim (BINARY SEARCH to optimise)
-            x = 2
-            while x <= int(lim):
-                if pow(x, b) == n:
-                    return True
-                else:
-                    x += 1
-            b += 1
-        else:
-            b += 1
-    
-    return False
-
-
-def gcd(a, b):
-    """
-    Euclidean algorithm for computing the greatest common divisor of two integers.
-    """
-    while b > 0: 
-        a, b = (b, a % b)
-
-    return a
 
 
 def phi(n):
@@ -144,3 +104,4 @@ def is_congruent(a, p, r):
     check[p % r] = 1
 
     return x == check
+
