@@ -2,13 +2,14 @@
 Successful implementation of aks primality test.
 """
 
-from gmpy2 import log, sqrt, floor, is_power, gcd
+from gmpy2 import log2, sqrt, floor, is_power, gcd, get_context, bit_length, mpz
 
 
 def aks_test(n):
     """
     Implement the AKS primality test.
     """
+    get_context().precision=bit_length(n)
     # Check if n is a perfect power. If so, return composite.
     if is_power(n):
         return "composite"
@@ -27,7 +28,7 @@ def aks_test(n):
         return "prime"
 
     # Check if (x + a)^n mod (x^r - 1, n) != (x^n + a) mod (x^r - 1, n)
-    for a in range(1, floor(sqrt(phi(r)) * log(n, 2))):
+    for a in range(1, mpz(floor(sqrt(phi(r)) * log2(n)))):
         if not is_congruent(a, n, r):
             return "composite"
 
@@ -67,7 +68,7 @@ def get_r(n):
     while True:
         if gcd(r, n) != 1:
             r += 1
-        elif ord(n, r) > pow(log(n, 2), 2):
+        elif ord(n, r) > pow(log2(n), 2):
             break
         else:
             r += 1
