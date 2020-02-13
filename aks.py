@@ -2,7 +2,7 @@
 Successful implementation of aks primality test.
 """
 
-from math import log, sqrt, floor
+from gmpy2 import log, sqrt, floor
 
 
 def aks_test(n):
