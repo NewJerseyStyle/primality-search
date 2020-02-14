@@ -17,7 +17,7 @@ else:
 while True:
 	t = p - 1
 	if is_prime(t):
-		if aks_test(t):
+		if aks_test(t) == "prime":
 			print('Find interesting thing: 2**%d-1' %bit_length(t))
 			with open('findings.txt', 'a') as f:
 				f.write('2**%d-1\n' %bit_length(t))
