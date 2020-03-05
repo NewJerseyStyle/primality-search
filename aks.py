@@ -3,6 +3,7 @@ Successful implementation of aks primality test.
 """
 
 from gmpy2 import log2, sqrt, floor, is_power, gcd, get_context, bit_length, mpz
+import ray
 
 
 def aks_test(n):
@@ -28,9 +29,8 @@ def aks_test(n):
         return "prime"
 
     # Check if (x + a)^n mod (x^r - 1, n) != (x^n + a) mod (x^r - 1, n)
-    for a in range(1, mpz(floor(sqrt(phi(r)) * log2(n)))):
-        if not is_congruent(a, n, r):
-            return "composite"
+    if False in ray.get([is_congruent.remote(a, n, r) for a in range(1, mpz(floor(sqrt(phi(r)) * log2(n))))]):
+        return "composite"
 
     return "prime"
 
@@ -89,6 +89,7 @@ def polyMult(a, b, r, p):
     return res
 
 
+@ray.remote
 def is_congruent(a, p, r):
     """
     Tests congruence (x + a)^p mod (x^r - 1, p) == (x^p + a) mod (x^r - 1, p). 
@@ -105,4 +106,3 @@ def is_congruent(a, p, r):
     check[p % r] = 1
 
     return x == check
-
