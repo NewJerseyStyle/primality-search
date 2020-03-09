@@ -3,12 +3,13 @@ from gmpy2 import mpz, is_prime, bit_length, next_prime
 import pickle
 from aks import aks_test
 
-if path.exists('p.pkl')
+known_largest_prime_power = mpz(82589933)
+searching_power = known_largest_prime_power * 5
+
+if path.exists('p.pkl'):
 	with open('p.pkl', 'rb') as f:
 		p = pickle.load(f)
 else:
-	known_largest_prime_power = mpz(82589933)
-	searching_power = known_largest_prime_power * 5
 	p = mpz(2) ** searching_power
 
 	with open('p.pkl', 'wb') as f:
