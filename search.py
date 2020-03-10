@@ -19,7 +19,7 @@ def next_prime(x, num_workers=31):
 	# search range split
 	jobs = []
 	while True:
-		for x in range(num_workers, step=2):
+		for x in range(x, x + num_workers, 2):
 			jobs.append(search_range.remote(x))
 		result = ray.get(jobs)
 		if sum(result):
