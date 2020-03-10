@@ -1,5 +1,5 @@
 from os import path
-from gmpy2 import mpz, is_prime, bit_length
+from gmpy2 import mpz, is_prime
 import pickle
 from aks import aks_test
 import ray
@@ -19,15 +19,15 @@ def next_prime(x, num_workers=31):
 	# search range split
 	jobs = []
 	while True:
-		for x in range(x, x + num_workers, 2):
-			jobs.append(search_range.remote(x))
+		for i in range(x, x + num_workers, 2):
+			jobs.append(search_range.remote(i))
 		result = ray.get(jobs)
-		if sum(result):
-			return_val = []
-			for i in result:
-				for j in i:
-					if j:
-						return_val.append(j)
+		return_val = []
+		for i in result:
+			for j in i:
+				if j:
+					return_val.append(j)
+		if len(return_val):
 			return return_val
 
 
