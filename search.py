@@ -18,7 +18,7 @@ def search_range(x, r=8192):
 def next_prime(x, num_workers=31):
 	# search range split
 	jobs = []
-	while not finished:
+	while True:
 		for x in range(num_workers, step=2):
 			jobs.append(search_range.remote(x))
 		result = ray.get(jobs)
