@@ -1,8 +1,10 @@
 from os import path
-from gmpy2 import mpz, is_prime, bit_length, next_prime
+from gmpy2 import mpz, is_prime, bit_length
 import pickle
 from aks import aks_test
+import ray
 
+ray.init()
 known_largest_prime_power = mpz(82589933)
 searching_power = known_largest_prime_power * 5
 
@@ -29,3 +31,29 @@ while True:
 				with open('findings.txt', 'a') as f:
 					f.write('2**%s-1\n' %searching_power)
 	searching_power = next_prime(searching_power)
+
+@ray.remote
+def search_range(x, r=8192):
+	if x & 1 == 0:
+		x += 1
+	return_val = []
+	for i in range(x, x + r, 2):
+		if is_prime(i):
+			return_val.append(i)
+	return return_val
+
+
+def next_prime(x, num_workers=31):
+	# search range split
+	jobs = []
+	while not finished:
+		for x in range(num_workers, step=2):
+			jobs.append(search_range.remote(x))
+		result = ray.get(jobs)
+		if sum(result):
+			return_val = []
+			for i in result:
+				for j in i:
+					if j:
+						return_val.append(j)
+			return return_val
