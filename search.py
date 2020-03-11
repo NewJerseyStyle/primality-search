@@ -30,11 +30,15 @@ searching_power = known_largest_prime_power * 5
 if path.exists('p.pkl'):
 	with open('p.pkl', 'rb') as f:
 		p = pickle.load(f)
+	with open('pow.pkl', 'rb') as f:
+		searching_power = pickle.load(f)
 else:
 	p = mpz(2) ** searching_power
 
 	with open('p.pkl', 'wb') as f:
 		pickle.dump(p, f)
+	with open('pow.pkl', 'wb') as f:
+		pickle.dump(searching_power, f)
 
 
 searching_powers = [searching_power]
@@ -51,3 +55,8 @@ while True:
 					with open('findings.txt', 'a') as f:
 						f.write('2**%s-1\n' %searching_power)
 	searching_powers = next_prime(searching_powers[-1])
+	# Checkpoint
+	with open('p.pkl', 'wb') as f:
+		pickle.dump(p, f)
+	with open('pow.pkl', 'wb') as f:
+		pickle.dump(searching_powers[-1], f)
