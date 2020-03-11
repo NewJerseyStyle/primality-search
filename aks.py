@@ -10,7 +10,6 @@ def aks_test(n):
     """
     Implement the AKS primality test.
     """
-    n=mpz(n)
     get_context().precision=bit_length(n)
     # Check if n is a perfect power. If so, return composite.
     if is_power(n):
