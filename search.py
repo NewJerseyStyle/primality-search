@@ -9,7 +9,7 @@ def search_range(x, step=2):
 	if x & 1 == 0:
 		x += 1
 	return_val = []
-	for i in range(x, x + 2*log(x), step):
+	for i in range(x, x + mpz(2*log(x)), step):
 		if is_prime(i):
 			return_val.append(i)
 	return return_val
