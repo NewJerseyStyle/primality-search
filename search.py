@@ -1,25 +1,22 @@
 from os import path
-from gmpy2 import mpz, is_prime, log
+from gmpy2 import mpz, log, next_prime
 import pickle
 from aks import aks_test
 import ray
 
 @ray.remote
-def search_range(x, step=2):
-	if x & 1 == 0:
-		x += 1
+def search_range(x, y):
 	return_val = []
-	for i in range(x, x + mpz(2*log(x)), step):
-		if is_prime(i):
-			return_val.append(i)
-	return return_val
+	while x < y:
+		x = next_prime(x)
+		return_val.append(x)
+	return return_val[:-1]
 
 
-def next_prime(x, num_workers=31):
+def search_next_prime(x, num_workers=31):
 	# search range split
-	jobs = []
-	for i in range(num_workers):
-		jobs.append(search_range.remote(x + i*2, num_workers*2))
+	step =  2*log(x)//num_workers
+	jobs = [search_range.remote(x + step*i, mpz(x + step*i + step)) for i in range(num_workers)]
 	return [i for e in ray.get(jobs) for i in e]
 
 
@@ -54,7 +51,7 @@ while True:
 					print('Find interesting thing: 2**%s-1' %searching_power)
 					with open('findings.txt', 'a') as f:
 						f.write('2**%s-1\n' %searching_power)
-	searching_powers = next_prime(searching_powers[-1])
+	searching_powers = search_next_prime(searching_powers[-1])
 	# Checkpoint
 	with open('p.pkl', 'wb') as f:
 		pickle.dump(p, f)
